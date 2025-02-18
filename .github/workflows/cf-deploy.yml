@@ -1,18 +1,36 @@
 name: Deploy Worker
+
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
   repository_dispatch:
+  workflow_dispatch:
+
 jobs:
-  deploy:
+  # deploy-to-cloudflare:
+  #   runs-on: ubuntu-latest
+  #   name: Deploy
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Build & Deploy Worker
+  #       uses: cloudflare/wrangler-action@v3
+  #       with:
+  #         apiToken: ${{ secrets.CF_API_TOKEN }}
+  #         accountId: ${{ secrets.CF_ACCOUNT_ID }}
+
+  deploy-to-deno:
+    name: Deploy to Deno
     runs-on: ubuntu-latest
-    name: Deploy
+    permissions:
+      id-token: write
+      contents: read
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Build & Deploy Worker
-        uses: cloudflare/wrangler-action@v3
+      - name: Deploy to Deno Deploy
+        uses: denoland/deployctl@v1
         with:
-          apiToken: ${{ secrets.CF_API_TOKEN }}
-          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          project: openai-gemini-davidingplus
+          entrypoint: src/worker.mjs
+          root: ./

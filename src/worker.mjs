@@ -1,5 +1,58 @@
 import { Buffer } from "node:buffer";
 
+const htmlTemplate = `
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="utf-8">
+</head>
+
+<body>
+    <p>This is demo instance of <a href="https://github.com/PublicAffairs/openai-gemini">Gemini ➜ OpenAI</a> API
+        transforming proxy!
+
+        </br>
+        Running serverless on <em>Deno</em>.
+
+    <p>You can try it with:
+
+    <pre id="sample">
+curl https://gemini.davidingplus.cn/v1/chat/completions \
+  -H "Authorization: Bearer $YOUR_GEMINI_API_KEY" \
+  -H 'Content-Type: application/json' \
+  -d '{
+      "model": "gemini-1.5-pro-latest",
+      "messages": [{"role": "user", "content": "Hello"}],
+      "temperature": 0.7
+      }'
+</pre>
+
+    <script>
+        const sampleHref = "https://gemini.davidingplus.cn/";
+        const href = window.location.href;
+        if (href.startsWith("http") && href.endsWith("/")) {
+            const sample = document.getElementById("sample");
+            sample.textContent = sample.textContent.replace(sampleHref, href);
+        }
+    </script>
+
+    <p>Please deploy your own instance, for free!
+        </br>
+        <em>This way, you can keep your API key secure.</em>
+
+    <div>
+        <iframe src="https://ghbtns.com/github-btn.html?user=PublicAffairs&repo=openai-gemini&type=star&count=true"
+            frameborder="0" scrolling="0" width="170" height="30" title="GitHub"></iframe>
+    </div>
+
+</body>
+
+</html>
+`;
+
 export default {
   async fetch (request) {
     if (request.method === "OPTIONS") {
@@ -32,7 +85,12 @@ export default {
           return handleModels(apiKey)
             .catch(errHandler);
         default:
-          throw new HttpError("404 Not Found", 404);
+          return new Response(htmlTemplate, {
+            headers: {
+              "Content-Type": "text/html; charset=utf-8",
+              "Cache-Control": "public, max-age=3600"
+            }
+          });
       }
     } catch (err) {
       return errHandler(err);
