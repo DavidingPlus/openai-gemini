@@ -50,13 +50,15 @@ export default {
               "Cache-Control": "public, max-age=3600"
             }
           });
-        default:
+        case pathname === "/":
           return new Response(indexHtml, {
             headers: {
               "Content-Type": "text/html; charset=utf-8",
               "Cache-Control": "public, max-age=3600"
             }
           });
+        default:
+          throw new HttpError("404 Not Found", 404);
       }
     } catch (err) {
       return errHandler(err);
