@@ -1,10 +1,16 @@
 import { Buffer } from "node:buffer";
 import { readFileSync } from "node:fs";
 
-const htmlTemplate = readFileSync(
+
+const indexHtml = readFileSync(
   new URL("../public/index.html", import.meta.url),
   "utf-8"
 );
+
+const favicon = readFileSync(
+  new URL("../public/favicon.ico", import.meta.url)
+);
+
 
 export default {
   async fetch (request) {
@@ -37,8 +43,15 @@ export default {
           assert(request.method === "GET");
           return handleModels(apiKey)
             .catch(errHandler);
+        case pathname === "/favicon.ico":
+          return new Response(favicon, {
+            headers: {
+              "Content-Type": "image/x-icon",
+              "Cache-Control": "public, max-age=3600"
+            }
+          });
         default:
-          return new Response(htmlTemplate, {
+          return new Response(indexHtml, {
             headers: {
               "Content-Type": "text/html; charset=utf-8",
               "Cache-Control": "public, max-age=3600"
