@@ -8,8 +8,8 @@
   "scripts": {
     "start": "node node.mjs",
     "dev": "nodemon --watch node.mjs --watch src/*.mjs node.mjs",
-    "start:deno": "deno --allow-env --allow-net deno.mjs",
-    "dev:deno": "deno --watch --allow-env --allow-net deno.mjs",
+    "start:deno": "deno --allow-env --allow-net --allow-read deno.mjs",
+    "dev:deno": "deno --watch --allow-env --allow-net --allow-read deno.mjs",
     "start:bun": "bun bun.mjs",
     "dev:bun": "bun --watch bun.mjs"
   }
